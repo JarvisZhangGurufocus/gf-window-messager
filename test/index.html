@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .window {
+        border: 1px solid;
+        width: 48%;
+        display: inline-block;
+        min-height: 200px;
+        vertical-align: top;
+      }
+    
+      .send-button {
+        cursor: pointer;
+      }
+    </style>
+
+    <script type="text/javascript" src="../index.js"></script>
+    <script>
+      var init = function () {
+        var iframe = document.body.querySelector('iframe')
+        var button = document.body.querySelector('.send-button')
+        var windowMessager = new WindowMessager(window)
+        var ready = false
+
+        windowMessager.addWindow(iframe.contentWindow, 'iframe').then(res => {
+          ready = true
+          windowMessager.addListener('test-event', onTestEvent)
+        }).catch(err => {
+          console.log(err)
+        })
+
+        button.addEventListener('click', function () {
+          if (!ready) {
+            appendMessage('no ready')
+          } else {
+            var data = randomData(13)
+            windowMessager.newMessage('test-event', data, 'iframe').send()
+            appendMessage(data + ' sent')
+          }
+        })
+      }
+
+      var onTestEvent = function (message) {
+        appendMessage(message.data + ' receive')
+      }
+
+      var randomData = function (len) {
+        var text = ''
+        var possible ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+        for (var i = 0; i < len; i++) {
+          text += possible.charAt(Math.floor(Math.random() * possible.length))
+        }
+        return text
+      }
+
+      var appendMessage = function (message) {
+        var messageWindow = document.body.querySelector('.message')
+        messageWindow.innerHTML += '<div> ' + message +' </div>'
+      }
+
+      window.onload = init
+    </script>
+  </head>
+
+  <body>
+    <span class="send-button"> 
+      Parent Send 
+    </span>
+
+    <div>
+      <div class="message window">
+      </div>
+      <iframe src="./child.html" class="window">
+      </iframe>
+    </div>
+  </body>
+</html>

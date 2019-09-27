@@ -1,13 +1,18 @@
 
 class WindowMessager {
     constructor (window) {
+        this.QRY_EVENT = 'window-messager-ready-qry'
+        this.ACK_EVENT = 'window-messager-ready-ack'
+        
         this.window = window
         this.waitings = {}
         this.windows = {}
         this.listeners = {}
         
-        this.window.addEventListener('message', this.onMessage)
-        this.addListener('ready', this.onReady)
+        this.window.addEventListener('message', this.onMessage.bind(this))
+        
+        this.addListener(this.QRY_EVENT, this.onReadyQry.bind(this))
+        this.addListener(this.ACK_EVENT, this.onReadyAck.bind(this))
     }
 
     addWindow(window, name) {
@@ -21,10 +26,10 @@ class WindowMessager {
                     resolve()
                     clearInterval(it)
                 } else if (retry === 0) {
-                    reject()
+                    reject(new Error('No Response From Window'))
                 } else {
                     retry = retry - 1
-                    this.newMessage('ready', null, this.waitings[name]).send()
+                    this.newMessage(this.QRY_EVENT, null, this.waitings[name]).send()
                 }
             }.bind(this), 30)
         }.bind(this))
@@ -36,7 +41,7 @@ class WindowMessager {
 
     newMessage(event, data, to) {
         if (typeof to === 'string') {
-            to = this.listeners[to]
+            to = this.windows[to]
         }
         return new Message(this.window, event, data, to)
     }
@@ -51,12 +56,17 @@ class WindowMessager {
             } catch (e) {}
         }
         var message = new Message(from, payload.event, payload.data, to)
+
         if (this.listeners[message.event]) {
             this.listeners[message.event](message)
         }
     }
 
-    onReady (message) {
+    onReadyQry (message) {
+        this.newMessage(this.ACK_EVENT, null, message.from).send()
+    }
+
+    onReadyAck (message) {
         var window = message.from
         var waitings = Object.keys(this.waitings)
         for (let i = 0; i < waitings.length; i++) {
@@ -78,6 +88,9 @@ class Message {
     }
 
     send () {
+        if (!this.to) {
+            return
+        }
         this.to.postMessage(JSON.stringify({
             event: this.event,
             data: this.data
@@ -85,4 +98,6 @@ class Message {
     }
 }
 
-module.exports = WindowMessager;
+if (typeof module !== 'undefined') {
+    module.exports = WindowMessager;
+}

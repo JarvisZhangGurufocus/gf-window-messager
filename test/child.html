@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .send-button {
+        cursor: pointer;
+      }
+    </style>
+
+    <script type="text/javascript" src="../index.js"></script>
+    <script>
+      var init = function () {
+        var windowMessager = new WindowMessager(this)
+        windowMessager.name = 'child'
+        
+        windowMessager.addWindow(window.parent, 'parent')
+
+        windowMessager.addListener('test-event', function (message) {
+          appendMessage(message.data + ' receive')
+          var data = randomData(13)
+          windowMessager.newMessage('test-event', data, 'parent').send()
+          appendMessage(data + ' sent')
+        })
+      }
+
+      var appendMessage = function (message) {
+        var messageWindow = document.body.querySelector('.message')
+        messageWindow.innerHTML += '<div> ' + message +' </div>'
+      }
+
+      var randomData = function (len) {
+        var text = ''
+        var possible ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+        for (var i = 0; i < len; i++) {
+          text += possible.charAt(Math.floor(Math.random() * possible.length))
+        }
+        return text
+      }
+
+      window.onload = init
+    </script>
+  </head>
+
+  <body>
+    CHILD
+    <div class="message window">
+    </div>
+  </body>
+</html>
