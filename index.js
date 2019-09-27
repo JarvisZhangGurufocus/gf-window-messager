@@ -1,9 +1,10 @@
 
 class WindowMessager {
-    constructor (window) {
+    constructor (window, strict = false) {
         this.QRY_EVENT = 'window-messager-ready-qry'
         this.ACK_EVENT = 'window-messager-ready-ack'
         
+        this.strict = strict
         this.window = window
         this.waitings = {}
         this.windows = {}
@@ -66,6 +67,9 @@ class WindowMessager {
             try {
                 payload = JSON.parse(payload)
             } catch (e) {}
+        }
+        if (this.strict && !fromName) {
+            return
         }
         var message = new Message(from, payload.event, payload.data, to)
         message.fromName = fromName
