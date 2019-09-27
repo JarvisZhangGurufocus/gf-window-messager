@@ -59,7 +59,7 @@ class WindowMessager {
             if (from === this.windows[windows[i]]) {
                 fromName = windows[i]
             }
-            if (to === thiw.windows[windows[i]]) {
+            if (to === this.windows[windows[i]]) {
                 toName = windows[i]
             }
         }
