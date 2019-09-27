@@ -17,6 +17,7 @@ class WindowMessager {
 
     addWindow(window, name) {
         if (!window || !name) { return }
+        if (window === this.window) { return }
         this.waitings[name] = window
 
         return new Promise(function (resolve, reject) {
