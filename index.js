@@ -49,15 +49,27 @@ class WindowMessager {
 
     onMessage (e) {
         var from = e.source
+        var fromName = ''
         var to = this.window
+        var toName = ''
         var payload = e.data
+        var windows = Object.keys(this.windows)
+        for (let i = 0; i < windows.length; i++) {
+            if (from === this.windows[windows[i]]) {
+                fromName = windows[i]
+            }
+            if (to === thiw.windows[windows[i]]) {
+                toName = windows[i]
+            }
+        }
         if (typeof payload === 'string') {
             try {
                 payload = JSON.parse(payload)
             } catch (e) {}
         }
         var message = new Message(from, payload.event, payload.data, to)
-
+        message.fromName = fromName
+        message.toName = toName
         if (this.listeners[message.event]) {
             this.listeners[message.event](message)
         }
