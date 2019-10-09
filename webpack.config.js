@@ -1,6 +1,23 @@
+const path = require('path');
+
 module.exports = {
-  entry: './index.js',
+  mode: 'production',
+  entry: './src/index.js',
   output: {
-    filename: 'index.js'
-  }
-}
+    path: path.resolve('dist'),
+    filename: 'index.js',
+    libraryTarget: 'commonjs2',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js?$/,
+        exclude: /(node_modules)/,
+        use: 'babel-loader',
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.js'],
+  },
+};
