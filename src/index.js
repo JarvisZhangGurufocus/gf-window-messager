@@ -95,7 +95,7 @@ class WindowMessager {
         }
     }
 
-    isWindowMessage (obj) {
+    static isWindowMessage (obj) {
         return obj instanceof Message
     }
 }
