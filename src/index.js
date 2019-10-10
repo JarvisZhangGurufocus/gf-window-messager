@@ -94,6 +94,10 @@ class WindowMessager {
             }
         }
     }
+
+    isWindowMessage (obj) {
+        return obj instanceof Message
+    }
 }
 
 class Message {
