@@ -1,6 +1,6 @@
 {
   "name": "gf-window-messager",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,5 +11,9 @@
   "devDependencies": {
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:JarvisZhangGurufocus/gf-window-messager.git"
   }
 }
